@@ -1,6 +1,8 @@
 package mx.gob.seguropopulartlax.bitacora_vehicular_repss.entidades;
 
-public class Usuario {
+import java.io.Serializable;
+
+public class Usuario implements Serializable {
     private String curp;
     private String password;
     private String nombre;
