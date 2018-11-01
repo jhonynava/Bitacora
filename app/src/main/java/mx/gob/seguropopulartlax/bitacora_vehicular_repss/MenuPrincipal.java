@@ -30,6 +30,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -51,7 +52,12 @@ import java.util.ArrayList;
 
 import mx.gob.seguropopulartlax.bitacora_vehicular_repss.adaptadores.VehiculoAdaptador;
 import mx.gob.seguropopulartlax.bitacora_vehicular_repss.entidades.Vehiculo;
+import mx.gob.seguropopulartlax.bitacora_vehicular_repss.restApi.EndpointsApi;
+import mx.gob.seguropopulartlax.bitacora_vehicular_repss.restApi.VehiculoResponse.VehiculoResponse;
+import mx.gob.seguropopulartlax.bitacora_vehicular_repss.restApi.model.RestApiAdapter;
 import mx.gob.seguropopulartlax.bitacora_vehicular_repss.tools.base64;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class MenuPrincipal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, Response.Listener<JSONObject>, Response.ErrorListener {
@@ -73,6 +79,7 @@ public class MenuPrincipal extends AppCompatActivity
 
         //Obetener usuario
         String nombre, apaterno, amaterno;
+        Boolean recorrido;
         TextView textView_nav;
 
         //Preferencias para obtener usuario
@@ -82,6 +89,7 @@ public class MenuPrincipal extends AppCompatActivity
         nombre = sharedPreferences.getString("nombre", null);
         apaterno = sharedPreferences.getString("apaterno", null);
         amaterno = sharedPreferences.getString("amaterno", null);
+        recorrido = sharedPreferences.getBoolean("recorrido", false);
 
         setContentView(R.layout.activity_menu_principal);
 
@@ -93,7 +101,6 @@ public class MenuPrincipal extends AppCompatActivity
         recyclerVehiculo.setLayoutManager(gridLayoutManager);
         requestQueue = Volley.newRequestQueue(this);
         cargarWerbService();
-
 
         //Inicia el Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -124,18 +131,22 @@ public class MenuPrincipal extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        if (recorrido){
+            Fragment fragment = new content_recorrido();
+            getSupportFragmentManager().beginTransaction().replace(R.id.view_appbar, fragment).commit();
+            fab.setEnabled(false);
+        }
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         View view = navigationView.getHeaderView(0);
         textView_nav = view.findViewById(R.id.nav_tvUsuario);
         textView_nav.setText(nombre + " " + apaterno + " " + amaterno);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Snackbar.make(constraintLayout, "Bienvenido " + nombre, Snackbar.LENGTH_LONG).show();
+        //Snackbar.make(constraintLayout, "Bienvenido " + nombre, Snackbar.LENGTH_LONG).show();
     }
 
     private void cargarWerbService() {
-        mostrarProgreso(true);
-
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
 
         // Set up the network to use HttpURLConnection as the HTTP client.
@@ -155,9 +166,14 @@ public class MenuPrincipal extends AppCompatActivity
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        mostrarProgreso(false);
         progressDialog.dismiss();
-        Snackbar.make(constraintLayout, "No se pudo conectar al servidor", Snackbar.LENGTH_LONG).show();
+        Snackbar snackbar = Snackbar.make(constraintLayout,"No se pudo conectar", Snackbar.LENGTH_INDEFINITE).setAction("REINTENTAR", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cargarWerbService();
+            }
+        });
+        snackbar.show();
         Log.i("ERROR", error.toString());
     }
 
@@ -188,14 +204,12 @@ public class MenuPrincipal extends AppCompatActivity
                 vehiculo.setImagen(jsonObject.optInt("imagen"));
                 listaVehiculos.add(vehiculo);
             }
-            mostrarProgreso(false);
             progressDialog.dismiss();
             VehiculoAdaptador adaptador = new VehiculoAdaptador(listaVehiculos, this);
             recyclerVehiculo.setAdapter(adaptador);
         } catch (JSONException e) {
             e.printStackTrace();
             Snackbar.make(constraintLayout, "No se pudo establecer conexión con el servidor", Snackbar.LENGTH_LONG).show();
-            mostrarProgreso(false);
             progressDialog.dismiss();
         }
     }
@@ -260,11 +274,6 @@ public class MenuPrincipal extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void mostrarProgreso(final boolean show) {
-        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
     }
 
     @Override

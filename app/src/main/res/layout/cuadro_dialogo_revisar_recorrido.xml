@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:theme="@android:style/Theme.Holo.Dialog">
+
+    <TextView
+        android:id="@+id/titulo_cuadro_dialogo_infomacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center_horizontal"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp"
+        android:text="Confirmar Información"
+        android:textColor="#ffffffff"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/subtitulo_cuadro_dialogo_informacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="¿La información es correcta?"
+        android:textColor="@color/negro"
+        android:textSize="15dp"
+        android:textStyle="italic" />
+
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp">
+
+        <TableRow
+            android:id="@+id/row_fecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margen_tabla"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:text="Fecha: "
+                android:textColor="@color/negro"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/texto_fecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margen_tabla"
+                android:layout_weight="1"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:text="30/10/2018"
+                android:textColor="@color/negro" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row_no_economico"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margen_tabla"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:text="No Economico: "
+                android:textColor="@color/negro"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/texto_no_economico"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margen_tabla"
+                android:layout_weight="1"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:text="301"
+                android:textColor="@color/negro" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row_kilometraje_inicial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margen_tabla"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:text="Kilometraje Inicial: "
+                android:textColor="@color/negro"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/texto_kilometraje_inicial"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margen_tabla"
+                android:layout_weight="1"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:text="18974.5"
+                android:textColor="@color/negro" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row_kilometraje_final"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margen_tabla"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:text="Kilometraje Final: "
+                android:textColor="#000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/texto_kilometraje_final"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margen_tabla"
+                android:layout_weight="1"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:text="19974.5"
+                android:textColor="@color/negro" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row_tanque_inicial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margen_tabla"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:text="Tanque Inicial: "
+                android:textColor="@color/negro"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/texto_tanque_inicial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margen_tabla"
+                android:layout_weight="1"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:text="Lleno"
+                android:textColor="@color/negro" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row_tanque_final"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margen_tabla"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:text="Tanque Final: "
+                android:textColor="#000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/texto_tanque_final"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margen_tabla"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:layout_weight="1"
+                android:text="Más de 3/4"
+                android:textColor="@color/negro" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row_recorrido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margen_tabla"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:text="Recorrido: "
+                android:textColor="@color/negro"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/texto_recorrido"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margen_tabla"
+                android:layout_weight="1"
+                android:background="@color/gris_claro"
+                android:ellipsize="end"
+                android:inputType="textMultiLine"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:singleLine="false"
+                android:text="San Pablo del Monte"
+                android:textColor="@color/negro" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row_nombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/margen_tabla"
+                android:background="@color/gris_claro"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:text="Nombre: "
+                android:textColor="@color/negro"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/texto_nombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margen_tabla"
+                android:layout_weight="1"
+                android:background="@color/gris_claro"
+                android:ellipsize="end"
+                android:inputType="textMultiLine"
+                android:paddingStart="@dimen/borde_tabla"
+                android:paddingEnd="@dimen/borde_tabla"
+                android:singleLine="false"
+                android:text="Jhonattan Romano Nava"
+                android:textColor="@color/negro" />
+        </TableRow>
+
+    </TableLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimaryDark" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cuadrodialog_cancelar"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-smallcaps"
+            android:text="CANCELAR"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <Button
+            android:id="@+id/btn_cuadrodialog_aceptar"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-smallcaps"
+            android:text="ACEPTAR"
+            android:textColor="@color/blanco" />
+
+    </LinearLayout>
+
+</LinearLayout>

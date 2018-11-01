@@ -2,15 +2,35 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator_recorrido"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Recorridos"
     android:focusableInTouchMode="true"
-    android:id="@+id/coordinator_recorrido">
+    tools:context=".Recorridos">
 
-    <ScrollView
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/view__recorrido_lottie"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerInside"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="loading_bitacora.json"
+            app:lottie_loop="true" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <ScrollView
+        android:id="@+id/view_recorrido"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -26,6 +46,38 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/icono_nombre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/usuario" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/edt_usuario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/edt_usuario2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="5dp"
+                        android:enabled="false"
+                        android:hint="Conductor"
+                        android:inputType="text"
+                        android:singleLine="true" />
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
                     android:id="@+id/icono_calendario"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -33,17 +85,21 @@
                     android:src="@drawable/calendar_range" />
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/edt_fecha"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:errorTextAppearance="@style/Error">
 
                     <EditText
-                        android:id="@+id/edt_fecha"
+                        android:id="@+id/edt_fecha2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
                         android:hint="Fecha"
                         android:inputType="date"
-                        android:singleLine="true"/>
+                        android:singleLine="true"
+                        android:clickable="true"
+                        android:focusableInTouchMode="false"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -62,18 +118,22 @@
                     android:src="@drawable/car" />
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/edt_no_economico"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3">
+                    android:layout_weight="3"
+                    app:errorTextAppearance="@style/Error">
 
                     <EditText
-                        android:id="@+id/edt_no_economico"
+                        android:id="@+id/edt_no_economico2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
                         android:hint="No Economico"
-                        android:inputType="text"
-                        android:singleLine="true" />
+                        android:inputType="textNoSuggestions|textCapCharacters"
+                        android:singleLine="true"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-"
+                        android:maxLength="6"/>
 
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
@@ -92,17 +152,20 @@
                     android:src="@drawable/counter" />
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/edt_kilometraje_inicial"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:errorTextAppearance="@style/Error">
 
                     <EditText
-                        android:id="@+id/edt_kilometraje_inicial"
+                        android:id="@+id/edt_kilometraje_inicial2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
                         android:hint="Kilometraje Inicial"
-                        android:inputType="number"
-                        android:singleLine="true" />
+                        android:inputType="numberDecimal"
+                        android:singleLine="true"
+                        android:digits=".1234567890"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -122,17 +185,22 @@
                     android:src="@drawable/fuel" />
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/edt_tanque_inicial"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:errorTextAppearance="@style/Error">
 
                     <EditText
-                        android:id="@+id/edt_tanque_inicial"
+                        android:id="@+id/edt_tanque_inicial2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
                         android:hint="Tanque Inicial"
                         android:inputType="number"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:clickable="true"
+                        android:focusableInTouchMode="false"
+                        android:onClick="showPopup"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -152,48 +220,20 @@
                     android:src="@drawable/map" />
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/edt_recorrido"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:errorTextAppearance="@style/Error">
 
                     <EditText
-                        android:id="@+id/edt_recorrido"
+                        android:id="@+id/edt_recorrido2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
                         android:hint="Recorrido"
-                        android:inputType="text"
+                        android:inputType="textCapCharacters|textMultiLine"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ,.- "
                         android:singleLine="false" />
-
-                </android.support.design.widget.TextInputLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/icono_nombre"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/app_name"
-                    android:src="@drawable/usuario" />
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/edt_usuario"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="5dp"
-                        android:hint="Conductor"
-                        android:inputType="text"
-                        android:singleLine="true"
-                        android:enabled="false"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -204,10 +244,10 @@
                 android:layout_width="110dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/custom_circle"
                 android:text="enviar"
-                android:textColor="#FFF"
-                android:layout_marginTop="20dp"/>
+                android:textColor="#FFF" />
 
         </LinearLayout>
 

@@ -21,9 +21,13 @@
         </activity>
         <activity
             android:name=".MenuPrincipal"
-            android:label="@string/title_activity_menu_principal"
+            android:label="Bitácora Vehicular"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Recorridos" android:parentActivityName=".MenuPrincipal"></activity>
+        <activity
+            android:name=".Recorridos"
+            android:label="Recorrido"
+            android:parentActivityName=".MenuPrincipal" />
+        <activity android:name=".Finalizar_recorrido"></activity>
     </application>
 
 </manifest>
