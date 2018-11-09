@@ -10,9 +10,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".Login">
+        android:supportsRtl="true">
+        <activity
+            android:name=".Login"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,8 +27,22 @@
         <activity
             android:name=".Recorridos"
             android:label="Recorrido"
-            android:parentActivityName=".MenuPrincipal" />
-        <activity android:name=".Finalizar_recorrido"></activity>
+            android:theme="@style/ThemeRecorrido"
+            android:parentActivityName=".MenuPrincipal"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".Finalizar_recorrido"
+            android:label="Finalizar Recorrido"
+            android:parentActivityName=".MenuPrincipal"
+            android:theme="@style/ThemeRecorrido"
+            android:windowSoftInputMode="stateHidden"/>
+
+        <activity android:name=".Recarga_combustible"
+            android:label="Recarga de Combustible"
+            android:parentActivityName=".MenuPrincipal"
+            android:theme="@style/ThemeRecarga_combustible"
+            android:windowSoftInputMode="stateHidden"/>
+
     </application>
 
 </manifest>

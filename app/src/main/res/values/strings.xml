@@ -7,8 +7,69 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="aceptar">Aceptar</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_recorrido">Recorrido</string>
+    <array name="municipios">
+        <item>AMAXAC DE GUERRERO</item>
+        <item>APETATITLÁN DE ANTONIO CARVAJAL</item>
+        <item>ATLANGATEPEC</item>
+        <item>ATLTZAYANCA</item>
+        <item>APIZACO</item>
+        <item>CALPULALPAN</item>
+        <item>EL CARMEN TEQUEXQUITLA</item>
+        <item>CUAPIAXTLA</item>
+        <item>CUAXOMULCO</item>
+        <item>CHIAUTEMPAN</item>
+        <item>MUÑOZ DE DOMINGO ARENAS</item>
+        <item>ESPAÑITA</item>
+        <item>HUAMANTLA</item>
+        <item>HUEYOTLIPAN</item>
+        <item>IXTACUIXTLA DE MARIANO MATAMOROS</item>
+        <item>IXTENCO</item>
+        <item>MAZATECOCHCO DE JOSÉ MARÍA MORELOS</item>
+        <item>CONTLA DE JUAN CUAMATZI</item>
+        <item>TEPETITLA DE LARDIZÁBAL</item>
+        <item>SANCTÓRUM DE LÁZARO CÁRDENAS</item>
+        <item>NANACAMILPA DE MARIANO ARISTA</item>
+        <item>ACUAMANALA DE MIGUEL HIDALGO</item>
+        <item>NATÍVITAS</item>
+        <item>PANOTLA</item>
+        <item>SAN PABLO DEL MONTE</item>
+        <item>SANTA CRUZ TLAXCALA</item>
+        <item>TENANCINGO</item>
+        <item>TEOLOCHOLCO</item>
+        <item>TEPEYANCO</item>
+        <item>TERRENATE</item>
+        <item>TETLA DE LA SOLIDARIDAD</item>
+        <item>TETLATLAHUCA</item>
+        <item>TLAXCALA</item>
+        <item>TLAXCO</item>
+        <item>TOCATLÁN</item>
+        <item>TOTOLAC</item>
+        <item>ZILTLALTÉPEC DE TRINIDAD SÁNCHEZ SANTOS</item>
+        <item>TZOMPANTEPEC</item>
+        <item>XALOZTOC</item>
+        <item>XALTOCAN</item>
+        <item>PAPALOTLA DE XICOHTÉNCATL</item>
+        <item>XICOHTZINCO</item>
+        <item>YAUHQUEMEHCAN</item>
+        <item>ZACATELCO</item>
+        <item>BENITO JUÁREZ</item>
+        <item>EMILIANO ZAPATA</item>
+        <item>LÁZARO CÁRDENAS</item>
+        <item>LA MAGDALENA TLALTELULCO</item>
+        <item>SAN DAMIÁN TEXÓLOC</item>
+        <item>SAN FRANCISCO TETLANOHCAN</item>
+        <item>SAN JERÓNIMO ZACUALPAN</item>
+        <item>SAN JOSÉ TEACALCO</item>
+        <item>SAN JUAN HUACTZINCO</item>
+        <item>SAN LORENZO AXOCOMANITLA</item>
+        <item>SAN LUCAS TECOPILCO</item>
+        <item>SANTA ANA NOPALUCAN</item>
+        <item>SANTA APOLONIA TEACALCO</item>
+        <item>SANTA CATARINA AYOMETLA</item>
+        <item>SANTA CRUZ QUILEHTLA</item>
+        <item>SANTA ISABEL XILOXOXTLA</item>
+    </array>
+
 </resources>

@@ -55,7 +55,8 @@
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/edt_usuario"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:errorTextAppearance="@style/Error">
 
                     <EditText
                         android:id="@+id/edt_usuario2"
@@ -225,7 +226,16 @@
                     android:layout_height="wrap_content"
                     app:errorTextAppearance="@style/Error">
 
-                    <EditText
+                    <MultiAutoCompleteTextView
+                        android:id="@+id/multiple_municipios"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="Recorrido"
+                        android:layout_marginStart="5dp"
+                        android:inputType="textCapCharacters|textMultiLine"
+                        android:singleLine="false" />
+
+                    <!--<EditText
                         android:id="@+id/edt_recorrido2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -233,21 +243,11 @@
                         android:hint="Recorrido"
                         android:inputType="textCapCharacters|textMultiLine"
                         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ,.- "
-                        android:singleLine="false" />
+                        android:singleLine="false" />-->
 
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btn_recorrido"
-                android:layout_width="110dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/custom_circle"
-                android:text="enviar"
-                android:textColor="#FFF" />
 
         </LinearLayout>
 

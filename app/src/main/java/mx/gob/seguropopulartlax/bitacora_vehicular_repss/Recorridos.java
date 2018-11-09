@@ -24,12 +24,17 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.PopupMenu;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -59,29 +64,31 @@ public class Recorridos extends AppCompatActivity implements PopupMenu.OnMenuIte
 
     private TextInputLayout edt_fecha, edt_no_economico, edt_kilometraje_inicial, edt_tanque_inicial,
             edt_recorrido, edt_usuario;
-    private Button btn_enviar_recorrido;
-    private String texto_fecha, texto_no_economico, texto_kilo_inicial, texto_tanque_inicial, texto_recorrido, texto_usuario;
+    private String texto_fecha, texto_no_economico, texto_kilo_inicial, texto_tanque_inicial,
+            texto_recorrido, texto_usuario;
     private EditText edt_fecha2, edt_no_economico2, edt_kilometraje_inicial2, edt_tanque_inicial2,
-            edt_recorrido2, edt_usuario2;
+            edt_usuario2;
     private Calendar myCalendar = Calendar.getInstance();
     private View view_recorrido, view_lottie;
     private long min;
-
     private ImageView iconoCalendario, iconoNoEcono, iconoKilInicial, iconoTanqueInicial, iconoRecorrido;
-
     private RequestQueue requestQueue;
     private JsonObjectRequest jsonObjectRequest;
     private StringRequest stringRequest;
     private CoordinatorLayout coordinatorLayout;
+    private MultiAutoCompleteTextView multiAutoCompleteTextView;
+    private static String[] municipios;
 
     TableRow row_fecha, row_no_economico, row_kilometraje_inicial, row_kilometraje_final, row_tanque_inicial,
             row_tanque_final, row_recorrido, row_nombre;
     TextView titulo, subtitulo, textView_fecha, textView_no_economico, textView_kilo_inicial,
             textView_tanque_inicial, textView_recorrido, textView_nombre;
 
+    //Extraer  preferencias de usuario
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     public static final String PREF_FILE_NAME = "preferencia";
+    private Boolean recorrido = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +97,6 @@ public class Recorridos extends AppCompatActivity implements PopupMenu.OnMenuIte
 
         //Obetener usuario
         String nombre, apaterno, amaterno, nombre_completo;
-        final Boolean recorrido;
 
         //Preferencias para obtener usuario
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -108,14 +114,12 @@ public class Recorridos extends AppCompatActivity implements PopupMenu.OnMenuIte
         edt_tanque_inicial = findViewById(R.id.edt_tanque_inicial);
         edt_recorrido = findViewById(R.id.edt_recorrido);
         edt_usuario = findViewById(R.id.edt_usuario);
-        btn_enviar_recorrido = findViewById(R.id.btn_recorrido);
         coordinatorLayout = findViewById(R.id.coordinator_recorrido);
 
         edt_fecha2 = findViewById(R.id.edt_fecha2);
         edt_no_economico2 = findViewById(R.id.edt_no_economico2);
         edt_kilometraje_inicial2 = findViewById(R.id.edt_kilometraje_inicial2);
         edt_tanque_inicial2 = findViewById(R.id.edt_tanque_inicial2);
-        edt_recorrido2 = findViewById(R.id.edt_recorrido2);
         edt_usuario2 = findViewById(R.id.edt_usuario2);
 
         iconoCalendario = findViewById(R.id.icono_calendario);
@@ -127,6 +131,8 @@ public class Recorridos extends AppCompatActivity implements PopupMenu.OnMenuIte
         view_recorrido = findViewById(R.id.view_recorrido);
         view_lottie = findViewById(R.id.view__recorrido_lottie);
 
+        municipios = getResources().getStringArray(R.array.municipios);
+        multiAutoCompleteTextView = findViewById(R.id.multiple_municipios);
         //Datos del no_economico
         Bundle parametros = this.getIntent().getExtras();
         if (parametros != null) {
@@ -151,7 +157,7 @@ public class Recorridos extends AppCompatActivity implements PopupMenu.OnMenuIte
                     Drawable e = iconoNoEcono.getDrawable();
                     e = DrawableCompat.wrap(e);
                     DrawableCompat.setTint(e,
-                            ContextCompat.getColor(Recorridos.this, R.color.colorAccent));
+                            ContextCompat.getColor(Recorridos.this, R.color.verde_dark));
 
                     Drawable f = iconoKilInicial.getDrawable();
                     f = DrawableCompat.wrap(f);
@@ -188,7 +194,7 @@ public class Recorridos extends AppCompatActivity implements PopupMenu.OnMenuIte
                     Drawable f = iconoKilInicial.getDrawable();
                     f = DrawableCompat.wrap(f);
                     DrawableCompat.setTint(f,
-                            ContextCompat.getColor(Recorridos.this, R.color.colorAccent));
+                            ContextCompat.getColor(Recorridos.this, R.color.verde_dark));
 
                     Drawable g = iconoTanqueInicial.getDrawable();
                     g = DrawableCompat.wrap(g);
@@ -203,7 +209,7 @@ public class Recorridos extends AppCompatActivity implements PopupMenu.OnMenuIte
             }
         });
 
-        edt_recorrido2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        multiAutoCompleteTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
@@ -230,7 +236,7 @@ public class Recorridos extends AppCompatActivity implements PopupMenu.OnMenuIte
                     Drawable h = iconoRecorrido.getDrawable();
                     h = DrawableCompat.wrap(h);
                     DrawableCompat.setTint(h,
-                            ContextCompat.getColor(Recorridos.this, R.color.colorAccent));
+                            ContextCompat.getColor(Recorridos.this, R.color.verde_dark));
                 }
             }
         });
@@ -247,90 +253,11 @@ public class Recorridos extends AppCompatActivity implements PopupMenu.OnMenuIte
             }
         });
 
-        btn_enviar_recorrido.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                texto_fecha = edt_fecha.getEditText().getText().toString().trim();
-                texto_no_economico = edt_no_economico.getEditText().getText().toString().trim();
-                texto_kilo_inicial = edt_kilometraje_inicial.getEditText().getText().toString().trim();
-                texto_tanque_inicial = edt_tanque_inicial.getEditText().getText().toString().trim();
-                texto_recorrido = edt_recorrido.getEditText().getText().toString().trim();
-                texto_usuario = edt_usuario.getEditText().getText().toString().trim();
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>
+                (this,android.R.layout.simple_list_item_1, municipios);
+        multiAutoCompleteTextView.setAdapter(arrayAdapter);
+        multiAutoCompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
-                Drawable d = iconoCalendario.getDrawable();
-                d = DrawableCompat.wrap(d);
-                DrawableCompat.setTint(d,
-                        ContextCompat.getColor(Recorridos.this, R.color.gris));
-
-                Drawable e = iconoNoEcono.getDrawable();
-                e = DrawableCompat.wrap(e);
-                DrawableCompat.setTint(e,
-                        ContextCompat.getColor(Recorridos.this, R.color.gris));
-
-                Drawable f = iconoKilInicial.getDrawable();
-                f = DrawableCompat.wrap(f);
-                DrawableCompat.setTint(f,
-                        ContextCompat.getColor(Recorridos.this, R.color.gris));
-
-                Drawable g = iconoTanqueInicial.getDrawable();
-                g = DrawableCompat.wrap(g);
-                DrawableCompat.setTint(g,
-                        ContextCompat.getColor(Recorridos.this, R.color.gris));
-
-                Drawable h = iconoRecorrido.getDrawable();
-                h = DrawableCompat.wrap(h);
-                DrawableCompat.setTint(h,
-                        ContextCompat.getColor(Recorridos.this, R.color.gris));
-
-                boolean cancel = false;
-
-                if (TextUtils.isEmpty(texto_fecha)) {
-                    edt_fecha.setError("La fecha es requerida");
-                    edt_fecha.requestFocus();
-                    cancel = true;
-                } else {
-                    edt_fecha.setError(null);
-                }
-                if (TextUtils.isEmpty(texto_no_economico)) {
-                    edt_no_economico.setError("El número economico es requerido");
-                    edt_no_economico.requestFocus();
-                    cancel = true;
-                } else {
-                    edt_no_economico.setError(null);
-                }
-                if (TextUtils.isEmpty(texto_kilo_inicial)) {
-                    edt_kilometraje_inicial.setError("El kilometraje inicial es requerido");
-                    edt_kilometraje_inicial.requestFocus();
-                    cancel = true;
-                } else {
-                    edt_kilometraje_inicial.setError(null);
-                }
-                if (TextUtils.isEmpty(texto_tanque_inicial)) {
-                    edt_tanque_inicial.setError("El tanque inicial es requerido");
-                    edt_tanque_inicial.requestFocus();
-                    cancel = true;
-                } else {
-                    edt_tanque_inicial.setError(null);
-                }
-                if (TextUtils.isEmpty(texto_recorrido)) {
-                    edt_recorrido.setError("El recorrido es requerido");
-                    edt_recorrido.requestFocus();
-                    cancel = true;
-                } else {
-                    edt_recorrido.setError(null);
-                }
-                if (!cancel) {
-                    if (isOnlineNet()) {
-                        if (!recorrido)
-                            cuadroDialogoResumen(Recorridos.this);
-                        else
-                            Toast.makeText(Recorridos.this, "Tienes un recorrido actualmente", Toast.LENGTH_SHORT).show();
-                    } else {
-                        cuadroDialogo(Recorridos.this);
-                    }
-                }
-            }
-        });
     }
 
     private void cargarWebservice(boolean b, final String texto_no_economico) {
@@ -472,6 +399,12 @@ public class Recorridos extends AppCompatActivity implements PopupMenu.OnMenuIte
     }
 
     public void showPopup(View v) {
+        //Ocultar teclado
+        View view = Recorridos.this.getCurrentFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+        //Mostrar Menu Pop Up
         PopupMenu popupMenu = new PopupMenu(this, v);
         popupMenu.setOnMenuItemClickListener(this);
         popupMenu.inflate(R.menu.popup_menu);
@@ -558,7 +491,110 @@ public class Recorridos extends AppCompatActivity implements PopupMenu.OnMenuIte
                 show.dismiss();
             }
         });
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_terminar_accion, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_terminar_accion:
+                accion_btn_terminar();
+                return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void accion_btn_terminar() {
+        //Ocultar teclado
+        View view = Recorridos.this.getCurrentFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+        texto_fecha = edt_fecha.getEditText().getText().toString().trim();
+        texto_no_economico = edt_no_economico.getEditText().getText().toString().trim();
+        texto_kilo_inicial = edt_kilometraje_inicial.getEditText().getText().toString().trim();
+        texto_tanque_inicial = edt_tanque_inicial.getEditText().getText().toString().trim();
+        texto_recorrido = multiAutoCompleteTextView.getText().toString();
+        texto_usuario = edt_usuario.getEditText().getText().toString().trim();
+
+        Drawable d = iconoCalendario.getDrawable();
+        d = DrawableCompat.wrap(d);
+        DrawableCompat.setTint(d,
+                ContextCompat.getColor(Recorridos.this, R.color.gris));
+
+        Drawable e = iconoNoEcono.getDrawable();
+        e = DrawableCompat.wrap(e);
+        DrawableCompat.setTint(e,
+                ContextCompat.getColor(Recorridos.this, R.color.gris));
+
+        Drawable f = iconoKilInicial.getDrawable();
+        f = DrawableCompat.wrap(f);
+        DrawableCompat.setTint(f,
+                ContextCompat.getColor(Recorridos.this, R.color.gris));
+
+        Drawable g = iconoTanqueInicial.getDrawable();
+        g = DrawableCompat.wrap(g);
+        DrawableCompat.setTint(g,
+                ContextCompat.getColor(Recorridos.this, R.color.gris));
+
+        Drawable h = iconoRecorrido.getDrawable();
+        h = DrawableCompat.wrap(h);
+        DrawableCompat.setTint(h,
+                ContextCompat.getColor(Recorridos.this, R.color.gris));
+
+        boolean cancel = false;
+
+        if (TextUtils.isEmpty(texto_fecha)) {
+            edt_fecha.setError("La fecha es requerida");
+            edt_fecha.requestFocus();
+            cancel = true;
+        } else {
+            edt_fecha.setError(null);
+        }
+        if (TextUtils.isEmpty(texto_no_economico)) {
+            edt_no_economico.setError("El número economico es requerido");
+            edt_no_economico.requestFocus();
+            cancel = true;
+        } else {
+            edt_no_economico.setError(null);
+        }
+        if (TextUtils.isEmpty(texto_kilo_inicial)) {
+            edt_kilometraje_inicial.setError("El kilometraje inicial es requerido");
+            edt_kilometraje_inicial.requestFocus();
+            cancel = true;
+        } else {
+            edt_kilometraje_inicial.setError(null);
+        }
+        if (TextUtils.isEmpty(texto_tanque_inicial)) {
+            edt_tanque_inicial.setError("El tanque inicial es requerido");
+            edt_tanque_inicial.requestFocus();
+            cancel = true;
+        } else {
+            edt_tanque_inicial.setError(null);
+        }
+        if (TextUtils.isEmpty(texto_recorrido)) {
+            edt_recorrido.setError("El recorrido es requerido");
+            edt_recorrido.requestFocus();
+            cancel = true;
+        } else {
+            edt_recorrido.setError(null);
+        }
+        if (!cancel) {
+            if (isOnlineNet()) {
+                if (!recorrido)
+                    cuadroDialogoResumen(Recorridos.this);
+                else
+                    Toast.makeText(Recorridos.this, "Tienes un recorrido actualmente", Toast.LENGTH_SHORT).show();
+            } else {
+                cuadroDialogo(Recorridos.this);
+            }
+        }
     }
 }

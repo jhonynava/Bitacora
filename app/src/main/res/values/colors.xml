@@ -6,6 +6,25 @@
     <color name="verde">#106117</color>
     <color name="negro">#000</color>
     <color name="gris">#828282</color>
+    <color name="gris_oscuro">#4b4b4b</color>
     <color name="gris_claro">#d2d2d2</color>
     <color name="blanco">#FFF</color>
+    <color name="cafe_claro">#945524</color>
+    <color name="cafe_oscuro">#71411c</color>
+    <color name="azul_claro">#02d5f1</color>
+    <color name="azul">#0098ac</color>
+
+    <color name="verde_primary">#00685b</color>
+    <color name="verde_dark">#003d32</color>
+    <color name="verde_accent">#439688</color>
+
+    <color name="naranja_primary">#ff6f00</color>
+    <color name="naranja_dark">#c43e00</color>
+    <color name="naranja_accent">#ffa040</color>
+
+    <color name="azul_primary">#2979ff</color>
+    <color name="azul_dark">#004ecb</color>
+    <color name="azul_accent">#75a7ff</color>
+
+    <color name="tranparente">#00000000</color>
 </resources>

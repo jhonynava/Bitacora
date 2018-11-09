@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Finalizar_recorrido">
+    tools:context=".Finalizar_recorrido"
+    android:id="@+id/constraint_finalizar_recorrido">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/view__recorrido_lottie"
+        android:id="@+id/view__finalizar_recorrido_lottie"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
@@ -26,7 +27,7 @@
     </android.support.constraint.ConstraintLayout>
 
     <ScrollView
-        android:id="@+id/view_recorrido"
+        android:id="@+id/view_finalizar_recorrido"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -104,16 +105,6 @@
                 </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btn_finalizar_recorrido"
-                android:layout_width="110dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/custom_circle"
-                android:text="enviar"
-                android:textColor="#FFF" />
 
         </LinearLayout>
 

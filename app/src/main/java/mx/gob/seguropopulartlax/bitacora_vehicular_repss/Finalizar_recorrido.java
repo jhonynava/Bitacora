@@ -1,8 +1,11 @@
 package mx.gob.seguropopulartlax.bitacora_vehicular_repss;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -17,9 +20,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -44,19 +51,20 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+import mx.gob.seguropopulartlax.bitacora_vehicular_repss.restApi.ConstantesRestApi;
+
 public class Finalizar_recorrido extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private TextInputLayout edt_kilometraje_final, edt_tanque_final;
     private EditText edt_kilometraje_final2, edt_tanque_final2;
     private String texto_kilometraje_final, texto_tanque_final;
     private ImageView icono_kilometraje, icono_tanque;
-    private Button btn_finalizar_recorrido;
     private TableRow row_fecha, row_no_economico, row_kilometraje_inicial, row_kilometraje_final, row_tanque_inicial,
             row_tanque_final, row_recorrido, row_nombre;
     private TextView titulo, subtitulo, textView_fecha, textView_no_economico, textView_kilo_inicial, textView_kilo_final,
             textView_tanque_inicial, textView_tanque_final, textView_recorrido, textView_nombre;
-    private String texto_fecha, texto_kilometraje_inicial, texto_tanque_inicial, texto_suministro,
-            texto_diferencia, texto_importe, texto_recorrido, texto_nombre, texto_firma, texto_observaciones,
+    private String texto_fecha, texto_kilometraje_inicial, texto_tanque_inicial, texto_suministro = "0",
+            texto_diferencia = "0", texto_importe = "0", texto_recorrido, texto_nombre, texto_firma = "0", texto_observaciones="0",
             texto_no_economico, texto_curp;
 
     private SharedPreferences sharedPreferences;
@@ -66,6 +74,9 @@ public class Finalizar_recorrido extends AppCompatActivity implements PopupMenu.
     private RequestQueue requestQueue;
     private JsonObjectRequest jsonObjectRequest;
     private StringRequest stringRequest;
+    private View view_recorrido, view_lottie, view_constraint_finalizar_recorrido;
+
+    private Boolean recarga_gasolina = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +92,9 @@ public class Finalizar_recorrido extends AppCompatActivity implements PopupMenu.
         icono_kilometraje = findViewById(R.id.icono_kilometraje_final);
         icono_tanque = findViewById(R.id.icono_tanque_final);
 
-        btn_finalizar_recorrido = findViewById(R.id.btn_finalizar_recorrido);
+        view_recorrido = findViewById(R.id.view_finalizar_recorrido);
+        view_lottie = findViewById(R.id.view_finalizar_recorrido);
+        view_constraint_finalizar_recorrido = findViewById(R.id.constraint_finalizar_recorrido);
 
         //Preferencias para obtener acceso
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -96,6 +109,7 @@ public class Finalizar_recorrido extends AppCompatActivity implements PopupMenu.
         texto_nombre = sharedPreferences.getString("nombre", null) + " " + sharedPreferences.getString("apaterno", null) + " " + sharedPreferences.getString("amaterno", null);
         texto_no_economico = sharedPreferences.getString("no_economico", null);
         texto_curp = sharedPreferences.getString("curp", null);
+        recarga_gasolina = sharedPreferences.getBoolean("recarga_gasolina", false);
 
 
         edt_kilometraje_final2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -105,7 +119,7 @@ public class Finalizar_recorrido extends AppCompatActivity implements PopupMenu.
                     Drawable d = icono_kilometraje.getDrawable();
                     d = DrawableCompat.wrap(d);
                     DrawableCompat.setTint(d,
-                            ContextCompat.getColor(Finalizar_recorrido.this, R.color.colorPrimaryDark));
+                            ContextCompat.getColor(Finalizar_recorrido.this, R.color.verde_dark));
 
                     Drawable e = icono_tanque.getDrawable();
                     e = DrawableCompat.wrap(e);
@@ -127,49 +141,7 @@ public class Finalizar_recorrido extends AppCompatActivity implements PopupMenu.
                     Drawable e = icono_tanque.getDrawable();
                     e = DrawableCompat.wrap(e);
                     DrawableCompat.setTint(e,
-                            ContextCompat.getColor(Finalizar_recorrido.this, R.color.colorPrimaryDark));
-                }
-            }
-        });
-
-        btn_finalizar_recorrido.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                texto_kilometraje_final = edt_kilometraje_final.getEditText().getText().toString();
-                texto_tanque_final = edt_tanque_final.getEditText().getText().toString();
-
-                Drawable d = icono_kilometraje.getDrawable();
-                d = DrawableCompat.wrap(d);
-                DrawableCompat.setTint(d,
-                        ContextCompat.getColor(Finalizar_recorrido.this, R.color.gris));
-
-                Drawable e = icono_tanque.getDrawable();
-                e = DrawableCompat.wrap(e);
-                DrawableCompat.setTint(e,
-                        ContextCompat.getColor(Finalizar_recorrido.this, R.color.gris));
-
-                boolean cancel = false;
-
-                if (TextUtils.isEmpty(texto_kilometraje_final)) {
-                    edt_kilometraje_final.setError("El tanque final es requerido");
-                    edt_kilometraje_final.requestFocus();
-                    cancel = true;
-                } else {
-                    edt_kilometraje_final.setError(null);
-                }
-                if (TextUtils.isEmpty(texto_tanque_final)) {
-                    edt_tanque_final.setError("El recorrido final es requerido");
-                    edt_tanque_final.requestFocus();
-                    cancel = true;
-                } else {
-                    edt_tanque_final.setError(null);
-                }
-                if (!cancel) {
-                    if (isOnlineNet()) {
-                        cuadroDialogoRevisar(Finalizar_recorrido.this);
-                    } else {
-                        cuadroDialogoRevisar(Finalizar_recorrido.this);
-                    }
+                            ContextCompat.getColor(Finalizar_recorrido.this, R.color.verde_dark));
                 }
             }
         });
@@ -288,6 +260,7 @@ public class Finalizar_recorrido extends AppCompatActivity implements PopupMenu.
     }
 
     private void cargarWebservice() {
+        mostrarProgreso(true);
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
 
         // Set up the network to use HttpURLConnection as the HTTP client.
@@ -299,30 +272,32 @@ public class Finalizar_recorrido extends AppCompatActivity implements PopupMenu.
         // Start the queue
         requestQueue.start();
 
-        String url = "http://sp.saludtlax.gob.mx:8084/Service_bitacora/webresources/vehiculos/add?"
+        String url = "http://sp.saludtlax.gob.mx:8084/Service_bitacora/webresources/bitacora/add?"
                 + "ID_BITACORA=0"
-                + "&FECHA=" + texto_fecha
-                + "&KILOMETRAJE_FINAL=" + texto_kilometraje_final
-                + "&IMPORTE"
-                + "&TANQUE_INICIAL=" + texto_tanque_inicial.replace(" ", "%")
-                + "&SUMINISTRO"
-                + "&TANQUE_FINAL=" + texto_tanque_final.replace(" ", "%")
-                + "&DIFERENCIA="
-                + "&NOMBRE_USUARIO=" + texto_nombre.replace(" ", "%")
-                + "&FIRMA"
-                + "&RECORRIDO" + texto_recorrido.replace(" ", "%")
-                + "&OBSERVACIONES"
-                + "&NO_ECONOMICO=" + texto_no_economico
-                + "&CURP=" + texto_curp
-                + "&KILOMETRAJE_INICIAL=" + texto_tanque_inicial;
+                + "&FECHA=" + texto_fecha.trim()
+                + "&KILOMETRAJE_FINAL=" + texto_kilometraje_final.trim()
+                + "&IMPORTE=" + texto_importe
+                + "&TANQUE_INICIAL=" + texto_tanque_inicial.replace("/", "-").replace("Á","A")
+                + "&SUMINISTRO=" + texto_suministro
+                + "&TANQUE_FINAL=" + texto_tanque_final.replace("/","-").replace("Á","A")
+                + "&DIFERENCIA=" + texto_diferencia
+                + "&NOMBRE_USUARIO=" + texto_nombre.trim()
+                + "&FIRMA=" + texto_firma
+                + "&RECORRIDO=" + texto_recorrido.trim()
+                + "&OBSERVACIONES=" + texto_observaciones
+                + "&NO_ECONOMICO=" + texto_no_economico.trim()
+                + "&CURP=" + texto_curp.trim()
+                + "&KILOMETRAJE_INICIAL=" + texto_kilometraje_inicial.trim();
 
-        stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        stringRequest = new StringRequest(Request.Method.POST, url.replace(" ", "%20"), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 mostrarProgreso(false);
                 if (response.equalsIgnoreCase("Agregado correctamente")) {
                     editor.putBoolean("recorrido", false);
+                    editor.putBoolean("recarga_gasolina", false);
                     editor.commit();
+                    actualizarEstatusVehiculo(true);
                     Intent intent = new Intent(Finalizar_recorrido.this, MenuPrincipal.class);
                     startActivity(intent);
                     Finalizar_recorrido.this.finish();
@@ -346,10 +321,69 @@ public class Finalizar_recorrido extends AppCompatActivity implements PopupMenu.
             }
         };
         requestQueue.add(stringRequest);
+        requestQueue.getCache().clear();
     }
 
-    private void mostrarProgreso(boolean b) {
+    private void actualizarEstatusVehiculo(boolean b) {
+        mostrarProgreso(true);
+        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+        Network network = new BasicNetwork(new HurlStack());
+        requestQueue = new RequestQueue(cache, network);
+        requestQueue.start();
 
+        final String disponibilidad = String.valueOf(b);
+
+        String url = "http://sp.saludtlax.gob.mx:8084/Service_bitacora/webresources/vehiculos/update?NO_ECONOMICO=" + texto_no_economico + "&DISPONIBILIDAD=" + disponibilidad;
+
+        StringRequest actualizarEstatus = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mostrarProgreso(false);
+                if (response.equalsIgnoreCase("actualizado")) {
+
+                } else
+                    Toast.makeText(Finalizar_recorrido.this, "Error, los datos no se enviaron", Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mostrarProgreso(false);
+                Toast.makeText(Finalizar_recorrido.this, "Error, los datos no se enviaron", Toast.LENGTH_LONG).show();
+                error.printStackTrace();
+                Log.i("ERROR", error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        requestQueue.add(actualizarEstatus);
+        requestQueue.getCache().clear();
+    }
+
+    private void mostrarProgreso(final boolean show) {
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+        view_recorrido.setVisibility(show ? View.GONE : View.VISIBLE);
+        view_recorrido.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                view_recorrido.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
+
+        view_lottie.setVisibility(show ? View.VISIBLE : View.GONE);
+        view_lottie.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                view_lottie.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     private boolean isOnlineNet() {
@@ -367,6 +401,12 @@ public class Finalizar_recorrido extends AppCompatActivity implements PopupMenu.
     }
 
     public void showPopup(View v) {
+        //Ocultar teclado
+        View view = Finalizar_recorrido.this.getCurrentFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+        //Mostrar Menu Pop Up
         PopupMenu popupMenu = new PopupMenu(this, v);
         popupMenu.setOnMenuItemClickListener(this);
         popupMenu.inflate(R.menu.popup_menu);
@@ -402,5 +442,89 @@ public class Finalizar_recorrido extends AppCompatActivity implements PopupMenu.
             default:
                 return false;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_terminar_accion, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_terminar_accion:
+                accion_btn_terminar();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void accion_btn_terminar() {
+        texto_kilometraje_final = edt_kilometraje_final.getEditText().getText().toString();
+        texto_tanque_final = edt_tanque_final.getEditText().getText().toString();
+
+        Drawable d = icono_kilometraje.getDrawable();
+        d = DrawableCompat.wrap(d);
+        DrawableCompat.setTint(d,
+                ContextCompat.getColor(Finalizar_recorrido.this, R.color.gris));
+
+        Drawable e = icono_tanque.getDrawable();
+        e = DrawableCompat.wrap(e);
+        DrawableCompat.setTint(e,
+                ContextCompat.getColor(Finalizar_recorrido.this, R.color.gris));
+
+        boolean cancel = false;
+
+        if (TextUtils.isEmpty(texto_kilometraje_final)) {
+            edt_kilometraje_final.setError("El tanque final es requerido");
+            edt_kilometraje_final.requestFocus();
+            cancel = true;
+        } else {
+            edt_kilometraje_final.setError(null);
+        }
+        if (TextUtils.isEmpty(texto_tanque_final)) {
+            edt_tanque_final.setError("El recorrido final es requerido");
+            edt_tanque_final.requestFocus();
+            cancel = true;
+        } else {
+            edt_tanque_final.setError(null);
+        }
+        if (!cancel) {
+            if (isOnlineNet()) {
+                if (Integer.parseInt(texto_kilometraje_inicial)>=Integer.parseInt(texto_kilometraje_final)){
+                    edt_kilometraje_final.setError("El kilometraje inicial fue de: " + texto_kilometraje_inicial);
+                    Snackbar.make(view_constraint_finalizar_recorrido, "\"El kilometraje final no puede ser menor al inicial, el kilometraje inicial insertado fue de: " +texto_kilometraje_inicial +".", Snackbar.LENGTH_INDEFINITE).show();
+                }else{
+                    cuadroDialogoRevisar(Finalizar_recorrido.this);
+                }
+            } else {
+                cuadroDialogoRevisar(Finalizar_recorrido.this);
+            }
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Salir")
+                    .setMessage("¿Estás seguro?")
+                    .setNegativeButton("Cancelar", null)
+                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(Finalizar_recorrido.this, MenuPrincipal.class);
+                            startActivity(intent);
+                            Finalizar_recorrido.this.finish();
+                        }
+                    })
+                    .show();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

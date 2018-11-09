@@ -1,7 +1,5 @@
 package mx.gob.seguropopulartlax.bitacora_vehicular_repss;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -12,11 +10,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -43,24 +39,24 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionButton;
+import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionHelper;
+import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout;
+import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RFACLabelItem;
+import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RapidFloatingActionContentLabelList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mx.gob.seguropopulartlax.bitacora_vehicular_repss.adaptadores.VehiculoAdaptador;
 import mx.gob.seguropopulartlax.bitacora_vehicular_repss.entidades.Vehiculo;
-import mx.gob.seguropopulartlax.bitacora_vehicular_repss.restApi.EndpointsApi;
-import mx.gob.seguropopulartlax.bitacora_vehicular_repss.restApi.VehiculoResponse.VehiculoResponse;
-import mx.gob.seguropopulartlax.bitacora_vehicular_repss.restApi.model.RestApiAdapter;
-import mx.gob.seguropopulartlax.bitacora_vehicular_repss.tools.base64;
-import retrofit2.Call;
-import retrofit2.Callback;
 
 public class MenuPrincipal extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, Response.Listener<JSONObject>, Response.ErrorListener {
+        implements NavigationView.OnNavigationItemSelectedListener, Response.Listener<JSONObject>, Response.ErrorListener, RapidFloatingActionContentLabelList.OnRapidFloatingActionContentLabelListListener {
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -70,8 +66,11 @@ public class MenuPrincipal extends AppCompatActivity
     private RequestQueue requestQueue;
     private JsonObjectRequest jsonObjectRequest;
     private ConstraintLayout constraintLayout;
-    private View view_lottie, view_recyclerAutos;
+    private View view_lottie, view_recyclerAutos, contenedor;
     private ProgressDialog progressDialog = null;
+    private RapidFloatingActionLayout rfaLayout;
+    private RapidFloatingActionButton rfaBtn;
+    private RapidFloatingActionHelper rfabHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +96,7 @@ public class MenuPrincipal extends AppCompatActivity
         listaVehiculos = new ArrayList<>();
 
         recyclerVehiculo = findViewById(R.id.rv_automoviles);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(MenuPrincipal.this,2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(MenuPrincipal.this, 2);
         recyclerVehiculo.setLayoutManager(gridLayoutManager);
         requestQueue = Volley.newRequestQueue(this);
         cargarWerbService();
@@ -105,9 +104,12 @@ public class MenuPrincipal extends AppCompatActivity
         //Inicia el Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        rfaLayout = findViewById(R.id.activity_main_rfal);
+        rfaBtn = findViewById(R.id.activity_main_rfab);
 
         //Vistas
         constraintLayout = findViewById(R.id.id_constraintUsuario);
+        contenedor = findViewById(R.id.view_appbar);
 
         //Progress Dialog
         progressDialog = new ProgressDialog(MenuPrincipal.this);
@@ -116,14 +118,45 @@ public class MenuPrincipal extends AppCompatActivity
         progressDialog.setContentView(R.layout.cargando);
         progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        //FloatingActionButton
+        RapidFloatingActionContentLabelList rfaContent = new RapidFloatingActionContentLabelList(this);
+        rfaContent.setOnRapidFloatingActionContentLabelListListener(this);
+        List<RFACLabelItem> items = new ArrayList<>();
+        items.add(new RFACLabelItem<Integer>()
+                .setLabel("Rutas")
+                .setResId(R.drawable.map_float)
+                .setIconNormalColor(getResources().getColor(R.color.azul_primary))
+                .setIconPressedColor(getResources().getColor(R.color.azul_dark))
+                .setLabelColor(getResources().getColor(R.color.azul_dark))
+                .setWrapper(0)
+        );
+        items.add(new RFACLabelItem<Integer>()
+                .setLabel("Recarga")
+                .setResId(R.drawable.gas_station_float)
+                .setIconNormalColor(getResources().getColor(R.color.naranja_primary))
+                .setIconPressedColor(getResources().getColor(R.color.naranja_dark))
+                .setLabelColor(getResources().getColor(R.color.naranja_dark))
+                .setLabelSizeSp(14)
+                .setWrapper(1)
+        );
+        items.add(new RFACLabelItem<Integer>()
+                .setLabel("Recorrido")
+                .setResId(R.drawable.car_float)
+                .setIconNormalColor(getResources().getColor(R.color.verde_primary))
+                .setIconPressedColor(getResources().getColor(R.color.verde_dark))
+                .setLabelColor(getResources().getColor(R.color.verde_dark))
+                .setWrapper(2)
+        );
+        rfaContent
+                .setItems(items)
+                .setIconShadowColor(0xff888888)
+        ;
+        rfabHelper = new RapidFloatingActionHelper(
+                this,
+                rfaLayout,
+                rfaBtn,
+                rfaContent
+        ).build();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -131,10 +164,10 @@ public class MenuPrincipal extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        if (recorrido){
+        if (recorrido) {
+            rfaLayout.setVisibility(View.GONE);
             Fragment fragment = new content_recorrido();
             getSupportFragmentManager().beginTransaction().replace(R.id.view_appbar, fragment).commit();
-            fab.setEnabled(false);
         }
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -144,6 +177,46 @@ public class MenuPrincipal extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //Snackbar.make(constraintLayout, "Bienvenido " + nombre, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onRFACItemLabelClick(int position, RFACLabelItem item) {
+        switch (position){
+            case 0:
+                Toast.makeText(this, "Proximamente..." , Toast.LENGTH_SHORT).show();
+                rfabHelper.toggleContent();
+                break;
+            case 1:
+                Intent recarga = new Intent(MenuPrincipal.this, Recarga_combustible.class);
+                startActivity(recarga);
+                rfabHelper.toggleContent();
+                break;
+            case 2:
+                Intent intent = new Intent(MenuPrincipal.this, Recorridos.class);
+                startActivity(intent);
+                rfabHelper.toggleContent();
+                break;
+        }
+    }
+
+    @Override
+    public void onRFACItemIconClick(int position, RFACLabelItem item) {
+        switch (position){
+            case 0:
+                Toast.makeText(this, "Proximamente..." , Toast.LENGTH_SHORT).show();
+                rfabHelper.toggleContent();
+                break;
+            case 1:
+                Intent recarga = new Intent(MenuPrincipal.this, Recarga_combustible.class);
+                startActivity(recarga);
+                rfabHelper.toggleContent();
+                break;
+            case 2:
+                Intent intent = new Intent(MenuPrincipal.this, Recorridos.class);
+                startActivity(intent);
+                rfabHelper.toggleContent();
+                break;
+        }
     }
 
     private void cargarWerbService() {
@@ -167,7 +240,7 @@ public class MenuPrincipal extends AppCompatActivity
     @Override
     public void onErrorResponse(VolleyError error) {
         progressDialog.dismiss();
-        Snackbar snackbar = Snackbar.make(constraintLayout,"No se pudo conectar", Snackbar.LENGTH_INDEFINITE).setAction("REINTENTAR", new View.OnClickListener() {
+        Snackbar snackbar = Snackbar.make(constraintLayout, "No se pudo conectar", Snackbar.LENGTH_INDEFINITE).setAction("REINTENTAR", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cargarWerbService();
@@ -257,12 +330,14 @@ public class MenuPrincipal extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_recargas) {
+            Intent intent = new Intent(MenuPrincipal.this, Recarga_combustible.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_rutas) {
 
         } else if (id == R.id.nav_configurar) {
 
-        } else if (id == R.id.nav_logout){
+        } else if (id == R.id.nav_logout) {
             editor.clear();
             editor.commit();
             finish();
